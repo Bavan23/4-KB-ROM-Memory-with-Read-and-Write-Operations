@@ -70,41 +70,22 @@ Output:
 Testbench for 4KB ROM Memory
 
 `timescale 1ns / 1ps
-module rom_memory_tb;
-    reg clk;
-    reg write_enable;
-    reg [11:0] address;
-    reg [7:0] data_in;
-    wire [7:0] data_out;
-    rom_memory uut (
-        .clk(clk),
-        .write_enable(write_enable),
-        .address(address),
-        .data_in(data_in),
-        .data_out(data_out)
-    );
-    always #5 clk = ~clk; 
 
-  initial begin
-        clk = 0;
-        write_enable = 0;
-        address = 0;
-        data_in = 0;
-        #10 write_enable = 1; address = 12'd0; data_in = 8'hA5;  
-        #10 write_enable = 1; address = 12'd1; data_in = 8'h5A; 
-        #10 write_enable = 1; address = 12'd2; data_in = 8'hFF;  
-        #10 write_enable = 1; address = 12'd3; data_in = 8'h00; 
-        #10 write_enable = 0; address = 12'd0;
-        #10 address = 12'd1;
-        #10 address = 12'd2;
-        #10 address = 12'd3;
-        #10 $stop;
-    end
- initial begin
-        $monitor("Time = %0t | Write Enable = %b | Address = %h | Data In = %h | Data Out = %h", 
-                 $time, write_enable, address, data_in, data_out);
-    end
-endmodule
+module tb_rom_memory; reg clk; reg rst; reg rw;
+reg [11:0] address;
+reg [7:0] data_in;
+wire [7:0] data_out;
+rom_memory uut ( .clk(clk), .rst(rst), .rw(rw), .address(address), .data_in(data_in), .data_out(data_out) ); initial begin clk = 0; forever #5 clk = ~clk;
+end initial begin rst = 1; rw = 0; address = 12'd0; data_in = 8'd0; #10; rst = 0; #10; rw = 1;
+address = 12'd10;
+data_in = 8'd55;
+#10; address = 12'd20;
+data_in = 8'd100;
+#10; address = 12'd30;
+data_in = 8'd200;
+#10; rw = 0;
+#10; address = 12'd10; #10; $display("Read from Address 10: %d", data_out); #10; address = 12'd20; #10; $display("Read from Address 20: %d", data_out); #10; address = 12'd30; #10; $display("Read from Address 30: %d", data_out);
+#10; $finish; end
 
 Output:
 
