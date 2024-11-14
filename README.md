@@ -33,8 +33,8 @@ In this design, we will implement a 4KB ROM. Since ROM is typically read-only, w
 4KB = 4096 Bytes = 4096 x 8 bits
 The address width for 4KB memory is 12 bits (2^12 = 4096).
 
+Verilog Code:
 
-// rom_memory.v
 module rom_memory (
     input wire clk,
     input wire write_enable,   // Signal to enable write operation
@@ -56,24 +56,21 @@ module rom_memory (
     end
 endmodule
 
+Output:
+
+![image](https://github.com/user-attachments/assets/43ad2f75-46b1-4b0f-b52e-e1b29b33f68e)
+
+
 
 Testbench for 4KB ROM Memory
 
-// rom_memory_tb.v
 `timescale 1ns / 1ps
-
 module rom_memory_tb;
-
-    // Inputs
     reg clk;
     reg write_enable;
     reg [11:0] address;
     reg [7:0] data_in;
-
-    // Outputs
     wire [7:0] data_out;
-
-    // Instantiate the ROM module
     rom_memory uut (
         .clk(clk),
         .write_enable(write_enable),
@@ -81,41 +78,32 @@ module rom_memory_tb;
         .data_in(data_in),
         .data_out(data_out)
     );
+    always #5 clk = ~clk; 
 
-    // Clock generation
-    always #5 clk = ~clk;  // Toggle clock every 5 ns
-
-    // Test procedure
-    initial begin
-        // Initialize inputs
+  initial begin
         clk = 0;
         write_enable = 0;
         address = 0;
         data_in = 0;
-
-        // Write data into memory
-        #10 write_enable = 1; address = 12'd0; data_in = 8'hA5;  // Write 0xA5 at address 0
-        #10 write_enable = 1; address = 12'd1; data_in = 8'h5A;  // Write 0x5A at address 1
-        #10 write_enable = 1; address = 12'd2; data_in = 8'hFF;  // Write 0xFF at address 2
-        #10 write_enable = 1; address = 12'd3; data_in = 8'h00;  // Write 0x00 at address 3
-
-        // Disable write and start reading from memory
+        #10 write_enable = 1; address = 12'd0; data_in = 8'hA5;  
+        #10 write_enable = 1; address = 12'd1; data_in = 8'h5A; 
+        #10 write_enable = 1; address = 12'd2; data_in = 8'hFF;  
+        #10 write_enable = 1; address = 12'd3; data_in = 8'h00; 
         #10 write_enable = 0; address = 12'd0;
         #10 address = 12'd1;
         #10 address = 12'd2;
         #10 address = 12'd3;
-
-        // Stop the simulation
         #10 $stop;
     end
-
-    // Monitor the values for verification
-    initial begin
+ initial begin
         $monitor("Time = %0t | Write Enable = %b | Address = %h | Data In = %h | Data Out = %h", 
                  $time, write_enable, address, data_in, data_out);
     end
-
 endmodule
+
+Output:
+
+![image](https://github.com/user-attachments/assets/4ee6de2c-f2b0-44c3-ac04-244a1d9ee276)
 
 
 Conclusion
