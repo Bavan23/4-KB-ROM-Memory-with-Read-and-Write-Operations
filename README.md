@@ -1,4 +1,4 @@
-# 4 KB-ROM-Memory-with-Read-and-Write-Operations
+# 4-KB-RAm,8x8 ROM,FIFO-Memory-with-Read-and-Write Operations
 
 # Aim:
 
